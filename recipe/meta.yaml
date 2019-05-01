@@ -1,6 +1,6 @@
 {% set name = "iDQ" %}
-{% set version = "0.1.0" %}
-{% set sha256 = "31efed79f9a0e0eb03ef174f5f8e48d3d23a3213dd95616a89730661fb385669" %}
+{% set version = "0.1.1" %}
+{% set sha256 = "8904fa6d477a1669f36c4198a5cb3a6b1d4339a71dabf18fe731ede8a58f742b" %}
 
 package:
   name: {{ name|lower }}
@@ -11,7 +11,7 @@ source:
   sha256: {{ sha256 }}
 
 build:
-  number: 1
+  number: 0
   noarch: python
   script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv "
 
