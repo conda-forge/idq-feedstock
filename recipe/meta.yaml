@@ -1,6 +1,6 @@
 {% set name = "iDQ" %}
-{% set version = "0.1.1" %}
-{% set sha256 = "8904fa6d477a1669f36c4198a5cb3a6b1d4339a71dabf18fe731ede8a58f742b" %}
+{% set version = "0.1.2" %}
+{% set sha256 = "024ad53474bffa0634adec8e8cc0b85b39842ee562e872c9d5c482fdbb417bf1" %}
 
 package:
   name: {{ name|lower }}
