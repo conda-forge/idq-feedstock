@@ -11,18 +11,18 @@ source:
   sha256: {{ sha256 }}
 
 build:
-  number: 0
+  number: 1
   noarch: python
   script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv "
 
 requirements:
   host:
-    - python <3
+    - python
     - pip
     - setuptools
 
   run:
-    - python <3
+    - python
     - numpy >=1.7.1
     - scipy
     - h5py >=2.3.0
