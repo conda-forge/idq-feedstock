@@ -17,12 +17,12 @@ build:
 
 requirements:
   host:
-    - python <3
+    - python
     - pip
     - setuptools
 
   run:
-    - python <3
+    - python
     - numpy >=1.7.1
     - scipy
     - h5py >=2.3.0
