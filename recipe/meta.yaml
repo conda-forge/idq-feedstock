@@ -7,7 +7,7 @@ package:
   version: {{ version }}
 
 source:
-  url: http://software.ligo.org/lscsoft/source/{{ name }}-{{ version }}.tar.gz
+  url: http://software.igwn.org/lscsoft/source/{{ name }}-{{ version }}.tar.gz
   sha256: {{ sha256 }}
 
 build:
@@ -68,12 +68,12 @@ test:
     - idq-train --help
 
 about:
-  home: https://git.ligo.org/reed.essick/iDQ
+  home: https://git.ligo.org/lscsoft/iDQ
   license: MIT
   license_family: MIT
   license_file: LICENSE
-  doc_url: https://docs.ligo.org/reed.essick/iDQ
-  dev_url: https://git.ligo.org/reed.essick/iDQ
+  doc_url: https://docs.ligo.org/lscsoft/iDQ
+  dev_url: https://git.ligo.org/lscsoft/iDQ
   summary: a low-latency statistical data quality pipeline for glitch detection
 
 extra:
