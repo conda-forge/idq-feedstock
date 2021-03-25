@@ -1,18 +1,18 @@
 {% set name = "iDQ" %}
-{% set version = "0.3.1" %}
-{% set sha256 = "3efd56556e2a4e335887fc9d2cd96c7e884240bcc869fec45146cfa0cdb528c9" %}
+{% set version = "0.4.0" %}
+{% set sha256 = "0440e83fdfda5a0a948d256b48bb4ca8641b90d9c2f184fa4901948b8aa348f4" %}
 
 package:
-  name: "{{ name|lower }}"
-  version: "{{ version }}"
+  name: {{ name|lower }}
+  version: {{ version }}
 
 source:
-  url: "http://software.ligo.org/lscsoft/source/{{ name }}-{{ version }}.tar.gz"
-  sha256: "{{ sha256 }}"
+  url: http://software.ligo.org/lscsoft/source/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
 
 build:
-  number: 3
-  script: "{{ PYTHON }} -m pip install . -vv"
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
   skip: true  # [win]
 
 requirements:
@@ -64,14 +64,14 @@ test:
     - idq-train --help
 
 about:
-  home: "https://git.ligo.org/reed.essick/iDQ"
-  license: "MIT"
-  license_family: "MIT"
-  license_file: "LICENSE"
-  doc_url: "https://docs.ligo.org/reed.essick/iDQ"
-  dev_url: "https://git.ligo.org/reed.essick/iDQ"
-  summary: "a low-latency statistical data quality pipeline for glitch detection"
+  home: https://git.ligo.org/reed.essick/iDQ
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  doc_url: https://docs.ligo.org/reed.essick/iDQ
+  dev_url: https://git.ligo.org/reed.essick/iDQ
+  summary: a low-latency statistical data quality pipeline for glitch detection
 
 extra:
   recipe-maintainers:
-    -  myNameIsPatrick
+    - myNameIsPatrick
