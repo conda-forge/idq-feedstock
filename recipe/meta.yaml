@@ -54,7 +54,7 @@ test:
     - idq-evaluate --help
     #- idq-kwm2hdf5 --help  <-- requires gstlal (not a user script)
     - idq-kwm2kws --help
-    - idq-monitor --help
+    #- idq-monitor --help  <-- import errors (see https://git.ligo.org/lscsoft/iDQ/-/issues/107)
     - idq-report --help
     - idq-simtimeseries --help
     - idq-stream --help
