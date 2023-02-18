@@ -1,6 +1,6 @@
 {% set name = "iDQ" %}
-{% set version = "0.4.0" %}
-{% set sha256 = "0440e83fdfda5a0a948d256b48bb4ca8641b90d9c2f184fa4901948b8aa348f4" %}
+{% set version = "0.5.0" %}
+{% set sha256 = "b8231241871e526752a91e52603598b6cceda1cc10e2d94ca9b2fdc59a3d4c44" %}
 
 package:
   name: {{ name|lower }}
@@ -11,7 +11,7 @@ source:
   sha256: {{ sha256 }}
 
 build:
-  number: 2
+  number: 0
   script: {{ PYTHON }} -m pip install . -vv
   skip: true  # [win]
 
