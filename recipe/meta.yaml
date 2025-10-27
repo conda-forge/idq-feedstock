@@ -13,12 +13,12 @@ source:
 build:
   noarch: python
   script: {{ PYTHON }} -m pip install . -vv
-  number: 0
+  number: 1
 
 requirements:
   host:
     - pip
-    - python >=3.9
+    - python {{ python_min }}
     - setuptools
     - setuptools-scm
   run:
@@ -33,7 +33,7 @@ requirements:
     - matplotlib-base >=2.0
     - numpy >=1.7.1
     - pluggy
-    - python >=3.9
+    - python >={{ python_min }}
     - python-confluent-kafka >=0.11.5
     - python-lal
     - python-ldas-tools-framecpp
@@ -45,6 +45,8 @@ requirements:
     - xgboost
 
 test:
+  requires:
+    - python {{ python_min }}
   imports:
     - idq
   commands:
