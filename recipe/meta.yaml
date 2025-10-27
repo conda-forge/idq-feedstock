@@ -1,6 +1,6 @@
 {% set name = "iDQ" %}
-{% set version = "0.6.3" %}
-{% set sha256 = "e8cb1b7ca35e73be8756faf8dfae94ab267c40bc0d6bbb3cf3899c9c76ae6f5d" %}
+{% set version = "0.6.2" %}
+{% set sha256 = "d6fc2706a176d191bdf93a5afc4b8232fae386436ce5a992d4344928827ceffb" %}
 
 package:
   name: {{ name|lower }}
@@ -9,6 +9,8 @@ package:
 source:
   url: http://software.igwn.org/lscsoft/source/{{ name }}-{{ version }}.tar.gz
   sha256: {{ sha256 }}
+  patches:
+    - 0001-numpy-2-compatibility.patch
 
 build:
   noarch: python
