@@ -1,0 +1,271 @@
+commit b624abac75fedbbb29b760bbca4847851190a7dd
+Author: patrick.godwin <patrick.godwin@ligo.org>
+Date:   Wed Apr 30 11:29:49 2025 -0700
+
+    support numpy 2.x
+
+diff --git a/idq/calibration.py b/idq/calibration.py
+index e715f0d..d109953 100644
+--- a/idq/calibration.py
++++ b/idq/calibration.py
+@@ -21,8 +21,8 @@ LOG3 = np.log(3)
+ DEFAULT_NUM_MC = 10000
+ DEFAULT_NUM_QUANTILES = 101
+ DEFAULT_NUM_POINTS = 101
+-DEFAULT_MAX_SAMPLES = np.infty  # use within flush logic
+-DEFAULT_MAX_STRIDE = np.infty
++DEFAULT_MAX_SAMPLES = np.inf  # use within flush logic
++DEFAULT_MAX_STRIDE = np.inf
+ 
+ DEFAULT_B = 0.1
+ DEFAULT_MINB = 1e-4
+@@ -164,13 +164,13 @@ class FixedBandwidth1DKDE(object):
+             self._obs = np.array([], dtype=float)
+ 
+             # interpolation stuff
+-            self._interp_logpdf[:] = -np.infty
++            self._interp_logpdf[:] = -np.inf
+             self._interp_cdf[:] = 0.0
+ 
+             # first and second moments of the pdf, which we calculate in the log
+             # and do some backflips to maintain high precision
+-            self._interp_logpdf_m1[:, 0] = -np.infty
+-            self._interp_logpdf_m2[:, 0] = -np.infty
++            self._interp_logpdf_m1[:, 0] = -np.inf
++            self._interp_logpdf_m2[:, 0] = -np.inf
+ 
+             # first and second moments for the CDF
+             self._interp_cdf_m1[:, 0] = 0.0
+@@ -1132,8 +1132,8 @@ class CalibrationMap(object):
+         self._interp_loglike_cdf = np.empty(
+             (len(self._ranks), num_quantiles + 2), dtype="float"
+         )
+-        self._interp_loglike_cdf[:, 0] = -np.infty  # set end points
+-        self._interp_loglike_cdf[:, -1] = +np.infty
++        self._interp_loglike_cdf[:, 0] = -np.inf  # set end points
++        self._interp_loglike_cdf[:, -1] = +np.inf
+         # used within the iteration to avoid repeatedly defining this
+         percentiles = np.linspace(0.0, 100, num_quantiles + 2)[1:-1]
+ 
+@@ -1162,11 +1162,11 @@ class CalibrationMap(object):
+             # catch all possible log(0) to avoid warnings
+             # only gsamples are zero
+             truth[:] = gsamples == 0
+-            samples[truth] = -np.infty
++            samples[truth] = -np.inf
+ 
+             # only csamples are zero
+             truth[:] = csamples == 0
+-            samples[truth] = +np.infty
++            samples[truth] = +np.inf
+ 
+             # both pdfs are zero
+             truth[:] = (gsamples == 0) * (csamples == 0)
+@@ -1477,7 +1477,7 @@ class DiscreteCalibrationMap(CalibrationMap):
+ 
+         # do this to avoid subtracting -inf from -inf
+         ans = np.zeros_like(gch, dtype=float)
+-        truth = np.logical_not((gch == -np.infty) * (cln == -np.infty))
++        truth = np.logical_not((gch == -np.inf) * (cln == -np.inf))
+         ans[truth] = gch[truth] - cln[truth]
+ 
+         return ans
+@@ -1495,8 +1495,8 @@ class DiscreteCalibrationMap(CalibrationMap):
+             (rank, np.empty(num_quantiles + 2, dtype=float)) for rank in ranks
+         )
+         for rank in ranks:
+-            self._loglike_cdf[rank][0] = -np.infty  # set end points
+-            self._loglike_cdf[rank][-1] = +np.infty
++            self._loglike_cdf[rank][0] = -np.inf  # set end points
++            self._loglike_cdf[rank][-1] = +np.inf
+ 
+         # used within the iteration to avoid repeatedly defining this
+         percentiles = np.linspace(0.0, 100, num_quantiles + 2)[1:-1]
+@@ -1518,11 +1518,11 @@ class DiscreteCalibrationMap(CalibrationMap):
+             # catch all possible log(0) to avoid warnings
+             # only gsamples are zero
+             truth[:] = gsamples == 0
+-            samples[truth] = -np.infty
++            samples[truth] = -np.inf
+ 
+             # only csamples are zero
+             truth[:] = csamples == 0
+-            samples[truth] = +np.infty
++            samples[truth] = +np.inf
+ 
+             # both pdfs are zero
+             truth[:] = (gsamples == 0) * (csamples == 0)
+@@ -1693,7 +1693,7 @@ class Discrete1DKDE(object):
+         )
+ 
+     def logpdf(self, ranks):
+-        ans = -np.infty * np.ones_like(ranks, dtype=float)
++        ans = -np.inf * np.ones_like(ranks, dtype=float)
+         pdf = self.pdf(ranks)
+         truth = pdf > 0
+         ans[truth] = np.log(pdf[truth])
+diff --git a/idq/classifiers/ovl.py b/idq/classifiers/ovl.py
+index e6384a6..80ae782 100644
+--- a/idq/classifiers/ovl.py
++++ b/idq/classifiers/ovl.py
+@@ -145,7 +145,7 @@ class Vetolist(ClassifierModel):
+ 
+     @property
+     def minimum_threshold(self):
+-        return np.min(self["threshold"]) if len(self["threshold"]) else np.infty
++        return np.min(self["threshold"]) if len(self["threshold"]) else np.inf
+ 
+     @property
+     def windows(self):
+@@ -854,7 +854,7 @@ class Vetolist(ClassifierModel):
+         threshold = configuration["threshold"]
+         try:
+             trgs = dataset.features[channel].filter(
+-                f"{significance} >= {threshold}", f"{significance} <= {np.infty}"
++                f"{significance} >= {threshold}", f"{significance} <= {np.inf}"
+             )
+             # get times above threshold, we already filtered by threshold within
+             # call to triggers
+@@ -957,7 +957,7 @@ def _gammpln(a, x):
+         if a == 0.0:
+             return 0.0  # np.log(1.)
+         else:
+-            return -np.infty  # np.log(0.)
++            return -np.inf  # np.log(0.)
+     elif x < a + 1.0:
+         return _gserln(a, x)[0]
+     else:
+@@ -1128,7 +1128,7 @@ def _compute_dovl_configuration_performance(
+     # nothing vetod, so we give it a low ranking
+     use_percentage = min(num_vetod_gch / num_aux, 1) if num_aux > 0 else 0.0
+     # handle this carefully so we don't throw things out that have fap=0 but eff>0
+-    eff_fap = eff / fap if fap > 0 else np.infty if eff > 0 else 0.0
++    eff_fap = eff / fap if fap > 0 else np.inf if eff > 0 else 0.0
+ 
+     # return
+     statistics = (
+diff --git a/idq/features.py b/idq/features.py
+index 333daff..c610a84 100644
+--- a/idq/features.py
++++ b/idq/features.py
+@@ -16,11 +16,11 @@ from . import utils
+ 
+ 
+ DEFAULT_TIME_NAME = "time"
+-DEFAULT_DELTA_TIME = np.infty
+-DEFAULT_COLUMN_VALUE = -np.infty
++DEFAULT_DELTA_TIME = np.inf
++DEFAULT_COLUMN_VALUE = -np.inf
+ 
+-DEFAULT_MAX_STRIDE = np.infty
+-DEFAULT_MAX_SAMPLES = np.infty
++DEFAULT_MAX_STRIDE = np.inf
++DEFAULT_MAX_SAMPLES = np.inf
+ 
+ FEATURE_NAME_TEMPLATE = "%s-%s"
+ 
+diff --git a/idq/io/reporters/hdf5.py b/idq/io/reporters/hdf5.py
+index cc19181..1b9f0e7 100644
+--- a/idq/io/reporters/hdf5.py
++++ b/idq/io/reporters/hdf5.py
+@@ -26,7 +26,7 @@ class HDF5Reporter(DiskReporter):
+             dataset = file_obj.create_dataset("data", data=data)
+             for key, value in attrs.items():
+                 if isinstance(value, str):
+-                    value = np.string_(value)
++                    value = np.bytes_(value)
+                 dataset.attrs.create(key, value)
+ 
+     @classmethod
+@@ -273,10 +273,10 @@ class CalibrationMapReporter(HDF5Reporter):
+     def _write_DiscreteCalibrationMap(self, path, calibrationmap, **kwargs):
+         with h5py.File(path, "w") as file_obj:
+             group = file_obj.create_group(self._DiscreteCalibrationMap_group)
+-            group.attrs.create("hash", np.string_(calibrationmap.hash))
+-            group.attrs.create("model_id", np.string_(calibrationmap.model_id))
++            group.attrs.create("hash", np.bytes_(calibrationmap.hash))
++            group.attrs.create("model_id", np.bytes_(calibrationmap.model_id))
+             group.attrs.create(
+-                "rate_estimation", np.string_(calibrationmap.rate_estimation)
++                "rate_estimation", np.bytes_(calibrationmap.rate_estimation)
+             )
+ 
+             ranks = calibrationmap.ranks
+@@ -316,10 +316,10 @@ class CalibrationMapReporter(HDF5Reporter):
+     def _write_CalibrationMap(self, path, calibrationmap, **kwargs):
+         with h5py.File(path, "w") as file_obj:
+             group = file_obj.create_group(self._CalibrationMap_group)
+-            group.attrs.create("hash", np.string_(calibrationmap.hash))
+-            group.attrs.create("model_id", np.string_(calibrationmap.model_id))
++            group.attrs.create("hash", np.bytes_(calibrationmap.hash))
++            group.attrs.create("model_id", np.bytes_(calibrationmap.model_id))
+             group.attrs.create(
+-                "rate_estimation", np.string_(calibrationmap.rate_estimation)
++                "rate_estimation", np.bytes_(calibrationmap.rate_estimation)
+             )
+ 
+             # store loglike_cdf interpolation object
+@@ -583,15 +583,15 @@ class HDF5SeriesReporter(HDF5Reporter):
+                 dataset.attrs.create(self._T0_NAME, series.t0)
+                 dataset.attrs.create(self._DELTAT_NAME, series.dt)
+                 # record the associated model hash
+-                dataset.attrs.create(self._MODEL_NAME, np.string_(series.model_id))
++                dataset.attrs.create(self._MODEL_NAME, np.bytes_(series.model_id))
+                 # and the calibration map hash
+                 dataset.attrs.create(
+-                    self._CALIB_NAME, np.string_(series.calibration_id)
++                    self._CALIB_NAME, np.bytes_(series.calibration_id)
+                 )
+                 dataset.attrs.create("run", run)
+                 # NOTE: could be fragile
+                 dataset.attrs.create(
+-                    "name", np.string_("-".join(os.path.basename(path).split("-")[:-2]))
++                    "name", np.bytes_("-".join(os.path.basename(path).split("-")[:-2]))
+                 )
+                 # store channel info
+                 dataset.attrs.create("detector", series.info.detector)
+@@ -600,7 +600,7 @@ class HDF5SeriesReporter(HDF5Reporter):
+                 dataset.attrs.create("f_high", series.info.f_high)
+ 
+                 for key in series.keys():
+-                    dataset.attrs.create(key + "_unit", np.string_(""))
++                    dataset.attrs.create(key + "_unit", np.bytes_(""))
+ 
+     @classmethod
+     def read(cls, path):
+diff --git a/idq/plots.py b/idq/plots.py
+index e2cf322..df45880 100644
+--- a/idq/plots.py
++++ b/idq/plots.py
+@@ -659,7 +659,12 @@ def calibration_distribs(
+ 
+ 
+ def _annotate_roc_auc(ax, eff, fap):
+-    areaUC = np.trapz(eff, fap) * -1  # integrated on [1,0], so reverse
++    # integrated on [1,0], so reverse
++    try:
++        areaUC = np.trapezoid(eff, fap) * -1
++    except AttributeError:  # numpy 1.x
++        areaUC = np.trapz(eff, fap) * -1
++
+     ax.fill_between(
+         fap,
+         eff,
+diff --git a/idq/utils.py b/idq/utils.py
+index c8fd675..72ef78a 100644
+--- a/idq/utils.py
++++ b/idq/utils.py
+@@ -23,10 +23,10 @@ DEFAULT_STRIDE = 1.0
+ DEFAULT_DELAY = 0.0
+ 
+ # the maximum number of iterations in CadenceManager.yield before moving on
+-DEFAULT_MAX_ITERS = np.infty
++DEFAULT_MAX_ITERS = np.inf
+ # the maximum latency we allow before skipping ahead
+-DEFAULT_MAX_LATENCY = np.infty
+-DEFAULT_MAX_TIMESTAMP = np.infty
++DEFAULT_MAX_LATENCY = np.inf
++DEFAULT_MAX_TIMESTAMP = np.inf
+ 
+ DEFAULT_MONITORING_CADENCE = 1.0
+ 
