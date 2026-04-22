@@ -1,42 +1,42 @@
-{% set name = "iDQ" %}
-{% set version = "0.6.2" %}
-{% set sha256 = "d6fc2706a176d191bdf93a5afc4b8232fae386436ce5a992d4344928827ceffb" %}
+{% set name = "idq" %}
+{% set version = "0.6.5" %}
+{% set sha256 = "aec83710fbf43202ea0fdd9dde6de4ae41981be8f3ea6f34ac460d484d8f8dd9" %}
+
+{% set python_min = "3.10" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
   url: http://software.igwn.org/lscsoft/source/{{ name }}-{{ version }}.tar.gz
   sha256: {{ sha256 }}
-  patches:
-    - 0001-numpy-2-compatibility.patch
 
 build:
   noarch: python
   script: {{ PYTHON }} -m pip install . -vv
-  number: 1
+  number: 0
 
 requirements:
   host:
     - pip
     - python {{ python_min }}
-    - setuptools
-    - setuptools-scm
+    - hatchling
+    - hatch-vcs
   run:
     - dqsegdb2 >=1.0
-    - ezdag
+    - ezdag >=0.4
     - gpstime
     - gwpy >=2.1
     - gwtrigfind
     - h5py >=2.2.1
-    - ligo-segments >=1.0.0
+    - igwn-segments >=2.0
     - ligo-scald >=0.8
     - matplotlib-base >=2.0
     - numpy >=1.7.1
     - pluggy
     - python >={{ python_min }}
-    - python-confluent-kafka >=0.11.5
+    - python-confluent-kafka
     - python-lal
     - python-ldas-tools-framecpp
     - python-ligo-lw
@@ -76,7 +76,7 @@ about:
   license: MIT
   license_family: MIT
   license_file: LICENSE
-  doc_url: https://docs.ligo.org/lscsoft/iDQ
+  doc_url: https://lscsoft.docs.ligo.org/iDQ
   dev_url: https://git.ligo.org/lscsoft/iDQ
   summary: a low-latency statistical data quality pipeline for glitch detection
 
